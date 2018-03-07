@@ -3,7 +3,7 @@ pragma solidity ^0.4.19;
 contract Splitter {
 
     address owner;
-    mapping (address => uint) userBalances;
+    mapping (address => uint) userBalances public;
 
     function Splitter() public {
         owner = msg.sender;
