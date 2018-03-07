@@ -10,11 +10,11 @@ export class Main {
   start() {
     this.Splitter.setProvider(web3.currentProvider);
 
-    this.getBalance((balance) => this.updateBalance(balance));
+    this.getContractBalance((balance) => this.updateContractBalance(balance));
     this.addContractEventListeners();
 
     this.populateSenderAddress();
-    this.populateSenderBalance();
+    this.updateSenderBalance();
     Main.populateReceiverAddresses();
     this.addEventListeners();
   }
@@ -31,7 +31,7 @@ export class Main {
     }
   }
 
-  populateSenderBalance() {
+  updateSenderBalance() {
     this.web3.eth.getBalance(this.senderAddress, (err, result) => {
       if (err) {
         console.error(err);
@@ -77,15 +77,16 @@ export class Main {
 
   eventReceivedDeposit(event) {
     console.log(event);
-    this.getBalance((balance) => this.updateBalance(balance));
+    this.getContractBalance((balance) => this.updateContractBalance(balance));
+    this.updateSenderBalance();
   }
 
-  updateBalance(newBalance) {
+  updateContractBalance(newBalance) {
     const balance_element = document.getElementById("balance");
     balance_element.innerHTML = this.web3.fromWei(newBalance.valueOf(), "ether");
   }
 
-  getBalance(callback) {
+  getContractBalance(callback) {
     this.Splitter.deployed().then((instance) => {
       return instance.address;
     }).then((address) => {
