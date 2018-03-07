@@ -3,16 +3,53 @@ export class Main {
   constructor(_Splitter, web3) {
     this.Splitter = _Splitter;
     this.web3 = web3;
+    console.log(web3.personal.listAccounts);
   }
 
   start() {
     this.Splitter.setProvider(web3.currentProvider);
 
     this.getBalance((balance) => this.updateBalance(balance));
+    this.addContractEventListeners();
+
+    this.populateSenderAddress();
+    Main.populateReceiverAddresses();
     this.addEventListeners();
   }
 
+  static populateReceiverAddresses() {
+    const userA = sessionStorage.getItem("user1");
+    if (userA) {
+      document.getElementById("user1").value = userA;
+    }
+
+    const userB = sessionStorage.getItem("user2");
+    if (userB) {
+      document.getElementById("user2").value = userB;
+    }
+  }
+
   addEventListeners() {
+    document.getElementById("send").addEventListener("click", (event) => {
+      const userA = document.getElementById("user1").value;
+      const userB = document.getElementById("user2").value;
+      const value = document.getElementById("amount").value;
+      const sender = document.getElementById("user-address").innerHTML;
+
+      this.Splitter.deployed()
+        .then(instance => instance.distribute(userA, userB, { from: sender, value: web3.toWei(value, "ether") }))
+        .catch(error => console.error(error));
+
+      sessionStorage.setItem("user1", userA);
+      sessionStorage.setItem("user2", userB);
+    });
+  }
+
+  populateSenderAddress() {
+    document.getElementById("user-address").innerHTML = this.web3.personal.listAccounts[0];
+  }
+
+  addContractEventListeners() {
     this.Splitter.deployed()
       .then(instance => instance.allEvents())
       .then(events => {
@@ -27,6 +64,7 @@ export class Main {
   }
 
   eventReceivedDeposit(event) {
+    console.log(event);
     this.getBalance((balance) => this.updateBalance(balance));
   }
 
