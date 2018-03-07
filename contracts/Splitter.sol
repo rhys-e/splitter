@@ -2,15 +2,15 @@ pragma solidity ^0.4.19;
 
 contract Splitter {
 
-    address owner;
+    address onlyOwner;
     mapping (address => uint) userBalances public;
 
     function Splitter() public {
-        owner = msg.sender;
+        onlyOwner = msg.sender;
     }
 
     modifier restricted() {
-        assert (msg.sender == owner);
+        assert (msg.sender == onlyOwner);
         _;
     }
 
