@@ -1,38 +1,15 @@
 // Import the page's CSS. Webpack will know what to do with it.
 import "../stylesheets/app.css";
 
-// Import libraries we need.
 import { default as Web3} from 'web3';
 import { default as contract } from 'truffle-contract'
+import { Main } from './main';
 
 // Import our contract artifacts and turn them into usable abstractions.
 import splitter_artifacts from '../../build/contracts/Splitter.json'
 
-var Splitter = contract(splitter_artifacts);
+const Splitter = contract(splitter_artifacts);
 
-window.App = {
-  start: () => {
-    // Bootstrap the MetaCoin abstraction for Use.
-    Splitter.setProvider(web3.currentProvider);
-
-    Splitter.deployed().then((instance) => {
-      return instance.address;
-    }).then((address) => {
-      return new Promise((resolve, reject) => {
-        web3.eth.getBalance(address, (err, balance) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(balance);
-          }
-        });
-      });
-    }).then((balance) => { 
-      var balance_element = document.getElementById("balance");
-      balance_element.innerHTML = web3.fromWei(balance.valueOf(), "ether");
-    }).catch(error => console.error(error));
-  }
-};
 
 window.addEventListener('load', function() {
   // Checking if Web3 has been injected by the browser (Mist/MetaMask)
@@ -46,5 +23,5 @@ window.addEventListener('load', function() {
     window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:9545"));
   }
 
-  App.start();
+  new Main(Splitter, web3).start();
 });

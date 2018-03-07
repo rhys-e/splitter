@@ -5,6 +5,8 @@ contract Splitter {
     address onlyOwner;
     mapping (address => uint) public userBalances;
 
+    event ReceivedDeposit(uint amount, address indexed sender);
+
     function Splitter() public {
         onlyOwner = msg.sender;
     }
@@ -19,6 +21,8 @@ contract Splitter {
        	require(userA != msg.sender);
        	require(userA != address(0));
        	require(userB != address(0));
+
+   		ReceivedDeposit(msg.value, msg.sender);
 
         uint halfValue = msg.value / 2;
         userBalances[userA] += halfValue;
