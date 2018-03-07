@@ -18,11 +18,19 @@ window.App = {
     Splitter.deployed().then((instance) => {
       return instance.address;
     }).then((address) => {
-      web3.eth.getBalance(address, (err, balance) => {
-        var balance_element = document.getElementById("balance");
-        balance_element.innerHTML = balance.valueOf();  
+      return new Promise((resolve, reject) => {
+        web3.eth.getBalance(address, (err, balance) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(balance);
+          }
+        });
       });
-    });
+    }).then((balance) => { 
+      var balance_element = document.getElementById("balance");
+      balance_element.innerHTML = web3.fromWei(balance.valueOf(), "ether");
+    }).catch(error => console.error(error));
   }
 };
 
