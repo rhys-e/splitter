@@ -9,15 +9,9 @@ contract Splitter {
         onlyOwner = msg.sender;
     }
 
-    modifier restricted() {
-        assert (msg.sender == onlyOwner);
-        _;
-    }
-
     function distribute(address userA, address userB)
         public
         payable
-        restricted
         returns(bool) {
 
         uint amountSplit = msg.value / 2;
