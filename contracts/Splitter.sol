@@ -20,10 +20,11 @@ contract Splitter {
        	require(userA != address(0));
        	require(userB != address(0));
 
-        uint amountSplit = msg.value / 2;
-        userBalances[userA] += amountSplit;
-        userBalances[userB] += amountSplit;
-        // todo: handle odd values
+        uint halfValue = msg.value / 2;
+        userBalances[userA] += halfValue;
+        userBalances[userB] += halfValue;
+        userBalances[msg.sender] += msg.value % 2;
+
         return true;
     }
 
