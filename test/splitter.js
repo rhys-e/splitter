@@ -76,7 +76,6 @@ contract("Splitter", (accounts) => {
 
     it("should evenly split user balances", () => {
       let userBalance1;
-      let userBalance2;
 
       return splitter.distribute(accounts[1], accounts[2], { from: accounts[0], value: web3.toWei(0.5, "ether") })
         .then(() => splitter.userBalances(accounts[1]))
@@ -84,11 +83,10 @@ contract("Splitter", (accounts) => {
           userBalance1 = _ub1;
         })
         .then(() => splitter.userBalances(accounts[2]))
-        .then(_ub2 => {
-          userBalance2 = _ub2;
+        .then(userBalance2 => {
+          assert.equal(userBalance1.toNumber(), userBalance2.toNumber());
+          assert.equal(userBalance1.toNumber(), web3.toWei(0.25, "ether"));
         })
-        .then(() => assert.equal(userBalance1.toNumber(), userBalance2.toNumber()))
-        .then(() => assert.equal(userBalance1.toNumber(), web3.toWei(0.25, "ether")))
         .catch(err => {
           console.error(err);
           assert.fail(err);
@@ -96,20 +94,12 @@ contract("Splitter", (accounts) => {
     });
 
     it("should evenly split user balances with a remainder going to sender", () => {
-      let userBalance1;
-      let userBalance2;
 
       return splitter.distribute(accounts[1], accounts[2], { from: accounts[0], value: 3 })
         .then(() => splitter.userBalances(accounts[1]))
-        .then(_ub1 => {
-          userBalance1 = _ub1;
-        })
+        .then(userBalance1 => assert.equal(userBalance1.toNumber(), 1))
         .then(() => splitter.userBalances(accounts[2]))
-        .then(_ub2 => {
-          userBalance2 = _ub2;
-        })
-        .then(() => assert.equal(userBalance1.toNumber(), userBalance2.toNumber()))
-        .then(() => assert.equal(userBalance1.toNumber(), 1))
+        .then(userBalance2 => assert.equal(userBalance2.toNumber(), 1))
         .then(() => splitter.userBalances(accounts[0]))
         .then((userBalance0) => assert.equal(userBalance0, 1))
         .catch(err => {
