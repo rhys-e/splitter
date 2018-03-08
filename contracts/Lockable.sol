@@ -10,7 +10,6 @@ contract Lockable is Ownable {
         locked = false;
     }
 
-
     modifier isUnlocked() {
       require(locked == false);
       _;

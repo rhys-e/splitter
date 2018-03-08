@@ -21,7 +21,6 @@ contract Splitter is Lockable {
     function Splitter() public {
     }
 
-
     function distribute(address userA, address userB)
         public
         payable
