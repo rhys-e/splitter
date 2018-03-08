@@ -30,6 +30,7 @@ contract Splitter is Lockable {
        	require(msg.value > 0);
        	require(userA != userB);
        	require(userA != msg.sender);
+        require(userB != msg.sender);
        	require(userA != address(0));
        	require(userB != address(0));
 
