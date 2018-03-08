@@ -107,5 +107,27 @@ contract("Splitter", (accounts) => {
           assert.fail(err);
         });
     });
+
+    it("should fire event when deposit is successful", () => {
+      const p1 = new Promise((resolve, reject) => {
+        splitter.allEvents().watch((err, result) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          });
+        })
+        .then((event) => assert.include(event.event, "ReceivedDeposit", "didn't receive necessary deposit event"))
+        .catch(err => {
+          console.error(err);
+          assert.fail(err);
+        });
+
+      const p2 = splitter.distribute(accounts[1], accounts[2], { from: accounts[0], value: 1 })
+        .catch(assert.fail);
+
+      return Promise.all([p1, p2]);
+    });
   });
 });
