@@ -41,8 +41,8 @@ contract Splitter {
 
     function collect() public {
         uint amount = userBalances[msg.sender];
-        msg.sender.transfer(amount);
         userBalances[msg.sender] = 0;
+        msg.sender.transfer(amount);
     }
 }
 
