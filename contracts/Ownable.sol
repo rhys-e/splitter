@@ -8,7 +8,6 @@ contract Ownable {
         onlyOwner = msg.sender;
     }
 
-
     modifier isOwner() {
       require(msg.sender == onlyOwner);
       _;
