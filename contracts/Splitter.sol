@@ -4,6 +4,7 @@ contract Splitter {
 
     address onlyOwner;
     mapping (address => uint) public userBalances;
+    bool public locked;
 
     event ReceivedDeposit(
       uint amount,
@@ -19,11 +20,33 @@ contract Splitter {
 
     function Splitter() public {
         onlyOwner = msg.sender;
+        locked = false;
+    }
+
+    modifier isOwner() {
+      require(msg.sender == onlyOwner);
+      _;
+    }
+
+    modifier isUnlocked() {
+      require(locked == false);
+      _;
+    }
+
+    function lock() public isOwner returns (bool) {
+      locked = true;
+      return true;
+    }
+
+    function unlock() public isOwner returns (bool) {
+      locked = false;
+      return true;
     }
 
     function distribute(address userA, address userB)
         public
         payable
+        isUnlocked
         returns(bool) {
 
        	require(msg.value > 0);
