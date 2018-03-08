@@ -31,14 +31,51 @@ export class Main {
     }
   }
 
+  updateRecipientBalances() {
+    const userA = document.getElementById("user1").value;
+    const userB = document.getElementById("user2").value;
+    this.updateRecipientBalance(userA, "Recipient A");
+    this.updateRecipientBalance(userB, "Recipient B");
+  }
+
+  updateRecipientBalance(userKey, userName) {
+    const container = document.getElementById("balance-container");
+    container.innerHTML = "";
+
+    this.Splitter.deployed()
+      .then(instance => instance.userBalances(userKey))
+      .then(balance => {
+        const span = document.createElement("small");
+        span.innerHTML = userName + " held balance : ";
+        container.appendChild(span);
+        const code = document.createElement("code");
+        code.innerHTML = this.web3.fromWei(balance, "ether") + " eth";
+        container.appendChild(code);
+        const br = document.createElement("br");
+        container.appendChild(br);
+      })
+      .catch(error => console.error(error));
+  }
+
   updateSenderBalance() {
-    this.web3.eth.getBalance(this.senderAddress, (err, result) => {
-      if (err) {
-        console.error(err);
-      } else {
+    new Promise((resolve, reject) => {
+      this.web3.eth.getBalance(this.senderAddress, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    })
+      .then(result => {
         document.getElementById("user-balance").innerHTML = this.web3.fromWei(result, "ether") + " eth";
-      }
-    });
+      })
+      .then(() => this.Splitter.deployed())
+      .then(instance => instance.userBalances(this.senderAddress))
+      .then(senderContractBalance => {
+        document.getElementById("user-contract-balance").innerHTML = this.web3.fromWei(senderContractBalance, "ether") + " eth";
+      })
+      .catch(err => console.error(err));
   }
 
   addEventListeners() {
@@ -47,9 +84,10 @@ export class Main {
       const userB = document.getElementById("user2").value;
       const value = document.getElementById("amount").value;
 
+      // todo: allow gas to be controlled
       this.Splitter.deployed()
         .then(instance => instance.distribute(userA, userB,
-          { from: this.senderAddress, value: this.web3.toWei(value, "ether") }))
+          { from: this.senderAddress, value: this.web3.toWei(value, "ether"), gas: 4700000 }))
         .catch(error => console.error(error));
 
       sessionStorage.setItem("user1", userA);
@@ -69,7 +107,7 @@ export class Main {
           if (err) {
             console.error(err);
           } else {
-            this["event" + result.event]();
+            this["event" + result.event](result);
           }
         })
       });
@@ -79,6 +117,7 @@ export class Main {
     console.log(event);
     this.getContractBalance((balance) => this.updateContractBalance(balance));
     this.updateSenderBalance();
+    this.updateRecipientBalances();
   }
 
   updateContractBalance(newBalance) {

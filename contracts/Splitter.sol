@@ -7,6 +7,8 @@ contract Splitter {
 
     event ReceivedDeposit(
       uint amount,
+      uint splitValue,
+      uint remainder,
       address indexed sender,
       address indexed userA,
       address indexed userB);
@@ -26,12 +28,13 @@ contract Splitter {
        	require(userA != address(0));
        	require(userB != address(0));
 
+        uint remainder = msg.value % 2;
         uint halfValue = msg.value / 2;
         userBalances[userA] += halfValue;
         userBalances[userB] += halfValue;
-        userBalances[msg.sender] += msg.value % 2;
+        userBalances[msg.sender] += remainder;
 
-        ReceivedDeposit(msg.value, msg.sender, userA, userB);
+        ReceivedDeposit(msg.value, halfValue, remainder, msg.sender, userA, userB);
 
         return true;
     }

@@ -11,11 +11,13 @@
 
   <br>
   <span>Your address: <code id="user-address"></code></span>
-  <br><span><code id="user-balance"></code></span>
+  <br><span><small>Address balance: </small><code id="user-balance"></code></span>
+  <br><span><small>Held balance: </small><code id="user-contract-balance"></code></span>
   <br><br><label for="user1"><small>Recipient A: </small></label><input type="text" id="user1" placeholder="e.g., 0xabc"></input>
   <br><br><label for="user2"><small>Recipient B: </small></label><input type="text" id="user2" placeholder="e.g., 0xyz"></input>
   <br><br><label for="amount"><small>Ether: </small></label><input type="text" id="amount" placeholder="e.g., 0.95"></input>
-  <br><br><button id="send">Split</button>
+  <br><br><button id="send">Split Deposit</button>
+  <br><br><div id="balance-container"></div>
 
   <br><br>
   <span class="hint"><strong>Hint:</strong> open the browser developer console to view any errors and warnings.</span>
