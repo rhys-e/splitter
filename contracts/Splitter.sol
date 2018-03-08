@@ -66,7 +66,7 @@ contract Splitter {
         return true;
     }
 
-    function collect() public {
+    function withdraw() public {
         uint amount = userBalances[msg.sender];
         require(amount > 0);
         userBalances[msg.sender] = 0;
