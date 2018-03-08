@@ -146,7 +146,33 @@ contract("Splitter", (accounts) => {
         .catch(err => {
           console.error(err);
           assert.fail(err);
-        })
+        });
+    });
+
+    it("should fire event when withdrawal is successful", () => {
+      const p1 = splitter.distribute(accounts[1], accounts[2], { from: accounts[0], value: web3.toWei(1, "ether") })
+        .then(() => Promise.promisify(splitter.allEvents().watch, { context: splitter.allEvents() })())
+        .then((event) => assert.include(event.event, "ReceivedWithdraw", "didn't receive necessary withdraw event"))
+        .catch(err => {
+          console.error(err);
+          assert.fail(err);
+        });
+
+      const p2 = splitter.withdraw({ from: accounts[1] })
+        .catch(assert.fail);
+
+      return Promise.all([p1, p2]);
+    });
+
+    it("should empty user balance for user on withdraw", () => {
+      return splitter.distribute(accounts[1], accounts[2], { from: accounts[0], value: web3.toWei(1, "ether") })
+        .then(() => splitter.withdraw({ from: accounts[1] }))
+        .then(() => splitter.userBalances(accounts[1]))
+        .then((newBal) => assert.equal(newBal.toNumber(), 0))
+        .catch(err => {
+          console.error(err);
+          assert.fail(err);
+        });
     });
   });
 });
