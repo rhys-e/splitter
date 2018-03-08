@@ -6,6 +6,8 @@
   - `truffle develop (compile migrate)`
   - `npm run dev` (open `localhost:8080`)
 
+Goals:
+
 - **there are 3 people: Alice, Bob and Carol.**
 - **we can see the balance of the Splitter contract on the Web page.**
 - **whenever Alice sends ether to the contract, half of it goes to Bob and the other half to Carol.**
