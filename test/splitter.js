@@ -87,7 +87,7 @@ contract("Splitter", (accounts) => {
         .then(_ub2 => {
           userBalance2 = _ub2;
         })
-        .then(() => assert.equal(userBalance1.toNumber(), userBalance1.toNumber()))
+        .then(() => assert.equal(userBalance1.toNumber(), userBalance2.toNumber()))
         .then(() => assert.equal(userBalance1.toNumber(), web3.toWei(0.25, "ether")))
         .catch(err => {
           console.error(err);
@@ -108,7 +108,7 @@ contract("Splitter", (accounts) => {
         .then(_ub2 => {
           userBalance2 = _ub2;
         })
-        .then(() => assert.equal(userBalance1.toNumber(), userBalance1.toNumber()))
+        .then(() => assert.equal(userBalance1.toNumber(), userBalance2.toNumber()))
         .then(() => assert.equal(userBalance1.toNumber(), 1))
         .then(() => splitter.userBalances(accounts[0]))
         .then((userBalance0) => assert.equal(userBalance0, 1))
