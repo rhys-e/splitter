@@ -1,3 +1,4 @@
+const Promise = require("bluebird");
 const Splitter = artifacts.require("./Splitter.sol");
 
 contract("Splitter", (accounts) => {
@@ -109,15 +110,7 @@ contract("Splitter", (accounts) => {
     });
 
     it("should fire event when deposit is successful", () => {
-      const p1 = new Promise((resolve, reject) => {
-        splitter.allEvents().watch((err, result) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(result);
-            }
-          });
-        })
+      const p1 = Promise.promisify(splitter.allEvents().watch, { context: splitter.allEvents() })()
         .then((event) => assert.include(event.event, "ReceivedDeposit", "didn't receive necessary deposit event"))
         .catch(err => {
           console.error(err);
@@ -128,6 +121,32 @@ contract("Splitter", (accounts) => {
         .catch(assert.fail);
 
       return Promise.all([p1, p2]);
+    });
+  });
+
+  describe("should successfully allow withdrawing of funds", () => {
+
+    it("should withdraw correct user balance", () => {
+      let acc1Bal;
+      let gasUsed;
+
+      return Promise.promisify(web3.eth.getBalance)(accounts[1])
+        .then((_acc1Bal) => {
+          acc1Bal = _acc1Bal;
+        })
+        .then(() => splitter.distribute(accounts[1], accounts[2], { from: accounts[0], value: web3.toWei(1, "ether") }))
+        .then(() => splitter.withdraw({ from: accounts[1] }))
+        .then((tx) => {
+          gasUsed = tx.receipt.gasUsed * 100000000000;
+          return Promise.promisify(web3.eth.getBalance)(accounts[1]);
+        })
+        .then((newBal) => {
+          assert.equal(newBal.plus(gasUsed).minus(acc1Bal).toNumber(), parseInt(web3.toWei(0.5, "ether"), 10));
+        })
+        .catch(err => {
+          console.error(err);
+          assert.fail(err);
+        })
     });
   });
 });
