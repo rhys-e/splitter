@@ -107,7 +107,9 @@ export class Main {
           if (err) {
             console.error(err);
           } else {
-            this["event" + result.event](result);
+            if (this["event" + result.event]) {
+              this["event" + result.event](result);
+            }
           }
         })
       });
@@ -115,6 +117,15 @@ export class Main {
 
   eventReceivedDeposit(event) {
     console.log(event);
+    this.updateValues();
+  }
+
+  eventReceivedWithdraw(event) {
+    console.log(event);
+    this.updateValues();
+  }
+
+  updateValues() {
     this.getContractBalance((balance) => this.updateContractBalance(balance));
     this.updateSenderBalance();
     this.updateRecipientBalances();

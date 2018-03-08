@@ -13,6 +13,10 @@ contract Splitter {
       address indexed userA,
       address indexed userB);
 
+    event ReceivedWithdraw(
+      uint amount,
+      address indexed recipient);
+
     function Splitter() public {
         onlyOwner = msg.sender;
     }
@@ -43,6 +47,8 @@ contract Splitter {
         uint amount = userBalances[msg.sender];
         require(amount > 0);
         userBalances[msg.sender] = 0;
+
+        ReceivedWithdraw(amount, msg.sender);
         msg.sender.transfer(amount);
     }
 }
