@@ -66,13 +66,15 @@ contract Splitter {
         return true;
     }
 
-    function withdraw() public {
+    function withdraw() public returns (bool) {
         uint amount = userBalances[msg.sender];
         require(amount > 0);
         userBalances[msg.sender] = 0;
 
         ReceivedWithdraw(amount, msg.sender);
         msg.sender.transfer(amount);
+
+        return true;
     }
 }
 
