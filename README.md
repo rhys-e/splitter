@@ -21,3 +21,5 @@ Stretch goals:
 - **cover potentially bad input data.**
 - rebuild the Splitter instance state only based on events.
 - do inheritance and import.
+
+![alt text](https://github.com/rhys-e/splitter/blob/master/splitter.png "Example")
