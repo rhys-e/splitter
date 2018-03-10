@@ -5,7 +5,7 @@ contract("Splitter", (accounts) => {
 
   let splitter;
   beforeEach(() => {
-    return Splitter.new().then(instance => {
+    return Splitter.new({ from: accounts[0] }).then(instance => {
       splitter = instance;
     });
   });
