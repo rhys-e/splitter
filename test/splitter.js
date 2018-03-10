@@ -111,7 +111,7 @@ contract("Splitter", (accounts) => {
 
     it("should fire event when deposit is successful", () => {
       const p1 = Promise.promisify(splitter.allEvents().watch, { context: splitter.allEvents() })()
-        .then((event) => assert.include(event.event, "ReceivedDeposit", "didn't receive necessary deposit event"))
+        .then((event) => assert.include(event.event, "LogDeposit", "didn't receive necessary deposit event"))
         .catch(err => {
           console.error(err);
           assert.fail(err);
@@ -152,7 +152,7 @@ contract("Splitter", (accounts) => {
     it("should fire event when withdrawal is successful", () => {
       const p1 = splitter.distribute(accounts[1], accounts[2], { from: accounts[0], value: web3.toWei(1, "ether") })
         .then(() => Promise.promisify(splitter.allEvents().watch, { context: splitter.allEvents() })())
-        .then((event) => assert.include(event.event, "ReceivedWithdraw", "didn't receive necessary withdraw event"))
+        .then((event) => assert.include(event.event, "LogWithdraw", "didn't receive necessary withdraw event"))
         .catch(err => {
           console.error(err);
           assert.fail(err);

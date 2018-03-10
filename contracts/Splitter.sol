@@ -6,7 +6,7 @@ contract Splitter is Lockable {
 
     mapping (address => uint) public userBalances;
 
-    event ReceivedDeposit(
+    event LogDeposit(
       uint amount,
       uint splitValue,
       uint remainder,
@@ -14,7 +14,7 @@ contract Splitter is Lockable {
       address indexed userA,
       address indexed userB);
 
-    event ReceivedWithdraw(
+    event LogWithdraw(
       uint amount,
       address indexed recipient);
 
@@ -40,7 +40,7 @@ contract Splitter is Lockable {
         userBalances[userB] += halfValue;
         userBalances[msg.sender] += remainder;
 
-        ReceivedDeposit(msg.value, halfValue, remainder, msg.sender, userA, userB);
+        LogDeposit(msg.value, halfValue, remainder, msg.sender, userA, userB);
 
         return true;
     }
@@ -50,7 +50,7 @@ contract Splitter is Lockable {
         require(amount > 0);
         userBalances[msg.sender] = 0;
 
-        ReceivedWithdraw(amount, msg.sender);
+        LogWithdraw(amount, msg.sender);
         msg.sender.transfer(amount);
 
         return true;

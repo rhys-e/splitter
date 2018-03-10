@@ -115,12 +115,12 @@ export class Main {
       });
   }
 
-  eventReceivedDeposit(event) {
+  eventLogDeposit(event) {
     console.log(event);
     this.updateValues();
   }
 
-  eventReceivedWithdraw(event) {
+  eventLogWithdraw(event) {
     console.log(event);
     this.updateValues();
   }
