@@ -117,7 +117,7 @@ contract("Splitter", (accounts) => {
           assert.fail(err);
         });
 
-      const p2 = splitter.distribute(accounts[1], accounts[2], { from: accounts[0], value: 1 })
+      const p2 = splitter.distribute(accounts[1], accounts[2], { from: accounts[0], value: 2 })
         .catch(assert.fail);
 
       return Promise.all([p1, p2]);

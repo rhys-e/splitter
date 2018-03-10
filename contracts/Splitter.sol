@@ -27,7 +27,7 @@ contract Splitter is Lockable {
         isUnlocked
         returns(bool) {
 
-       	require(msg.value > 0);
+        require(msg.value > 1);
        	require(userA != userB);
        	require(userA != msg.sender);
         require(userB != msg.sender);
