@@ -55,5 +55,10 @@ contract Splitter is Lockable {
 
         return true;
     }
+
+    function()
+      private {
+
+    }
 }
 
