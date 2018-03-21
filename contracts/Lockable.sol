@@ -4,7 +4,7 @@ import './Ownable.sol';
 
 contract Lockable is Ownable {
 
-    bool public locked;
+    bool private locked;
 
     function Lockable() public {
         locked = false;
@@ -13,6 +13,10 @@ contract Lockable is Ownable {
     modifier isUnlocked() {
       require(locked == false);
       _;
+    }
+
+    function isLocked() public view returns (bool) {
+      return locked;
     }
 
     function lock() public isOwner returns (bool) {
