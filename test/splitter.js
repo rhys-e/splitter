@@ -85,8 +85,8 @@ contract("Splitter", (accounts) => {
         })
         .then(() => splitter.userBalances(accounts[2]))
         .then(userBalance2 => {
-          assert.equal(userBalance1.toNumber(), userBalance2.toNumber());
-          assert.equal(userBalance1.toNumber(), web3.toWei(0.25, "ether"));
+          assert(userBalance1.eq(userBalance2));
+          assert(userBalance1.eq(web3.toWei(0.25, "ether")));
         })
         .catch(err => {
           console.error(err);
@@ -98,11 +98,11 @@ contract("Splitter", (accounts) => {
 
       return splitter.distribute(accounts[1], accounts[2], { from: accounts[0], value: 3 })
         .then(() => splitter.userBalances(accounts[1]))
-        .then(userBalance1 => assert.equal(userBalance1.toNumber(), 1))
+        .then(userBalance1 => assert(userBalance1.eq(1)))
         .then(() => splitter.userBalances(accounts[2]))
-        .then(userBalance2 => assert.equal(userBalance2.toNumber(), 1))
+        .then(userBalance2 => assert(userBalance2.eq(1)))
         .then(() => splitter.userBalances(accounts[0]))
-        .then((userBalance0) => assert.equal(userBalance0, 1))
+        .then((userBalance0) => assert(userBalance0.eq(1)))
         .catch(err => {
           console.error(err);
           assert.fail(err);
@@ -141,7 +141,7 @@ contract("Splitter", (accounts) => {
           return Promise.promisify(web3.eth.getBalance)(accounts[1]);
         })
         .then((newBal) => {
-          assert.equal(newBal.plus(gasUsed).minus(acc1Bal).toNumber(), parseInt(web3.toWei(0.5, "ether"), 10));
+          assert(newBal.plus(gasUsed).minus(acc1Bal).eq(parseInt(web3.toWei(0.5, "ether"), 10)));
         })
         .catch(err => {
           console.error(err);
@@ -168,7 +168,7 @@ contract("Splitter", (accounts) => {
       return splitter.distribute(accounts[1], accounts[2], { from: accounts[0], value: web3.toWei(1, "ether") })
         .then(() => splitter.withdraw({ from: accounts[1] }))
         .then(() => splitter.userBalances(accounts[1]))
-        .then((newBal) => assert.equal(newBal.toNumber(), 0))
+        .then((newBal) => assert(newBal.eq(0)))
         .catch(err => {
           console.error(err);
           assert.fail(err);
