@@ -21,13 +21,13 @@ contract("Splitter", (accounts) => {
     });
 
     it("should reject a transfer including a split to the sending address", () => {
-      var p1 = splitter.distribute(accounts[0], accounts[1], { from: accounts[0], value: web3.toWei(1, "gwei" ) })
+      const p1 = splitter.distribute(accounts[0], accounts[1], { from: accounts[0], value: web3.toWei(1, "gwei" ) })
         .then(assert.fail)
         .catch(err => {
           assert.include(err.message, "revert", "should revert when transfer includes own address");
         });
 
-      var p2 = splitter.distribute(accounts[1], accounts[0], { from: accounts[0], value: web3.toWei(1, "gwei" ) })
+      const p2 = splitter.distribute(accounts[1], accounts[0], { from: accounts[0], value: web3.toWei(1, "gwei" ) })
         .then(assert.fail)
         .catch(err => {
           assert.include(err.message, "revert", "should revert when transfer includes own address");
